@@ -1,0 +1,109 @@
+
+import javax.swing.*;
+
+public class AntoniaMoralesTeoriaDeColas extends JFrame {
+    private JLabel labelMediaAtencion, labelDisponibilidad, labelMediaEspera,labelPln;
+    private JTextField textFieldMediaAtencion, textFieldDisponibilidad, textFieldMediaEspera,textFieldPln;
+    private JButton buttonCalcular;
+    private JTextArea textAreaResultados;
+    public AntoniaMoralesTeoriaDeColas() {
+        setTitle("Teoría de Colas");
+        setSize(400, 500);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new java.awt.FlowLayout());
+
+        labelMediaAtencion = new JLabel("Media de Atención:");
+        textFieldMediaAtencion = new JTextField(10);
+
+        labelDisponibilidad = new JLabel("Disponibilidad de Servicio:");
+        textFieldDisponibilidad = new JTextField(10);
+
+        labelMediaEspera = new JLabel("Media de Espera:");
+        textFieldMediaEspera = new JTextField(10);
+        
+        labelPln = new JLabel ( " n de probabilidad que haya elementos en la cola: "); 
+        textFieldPln = new JTextField(10);
+
+        buttonCalcular = new JButton("Calcular");
+        textAreaResultados = new JTextArea(20, 30);
+
+        add(labelMediaAtencion);
+        add(textFieldMediaAtencion);
+        add(labelDisponibilidad);
+        add(textFieldDisponibilidad);
+        add(labelMediaEspera);
+        add(textFieldMediaEspera);
+        add(labelPln);
+        add(textFieldPln);
+        add(buttonCalcular);
+        add(new JScrollPane(textAreaResultados));
+        buttonCalcular.addActionListener(e -> calcularResultados());
+
+    }
+
+    private void calcularResultados() {
+        try {
+            double mediaAtencion = Double.parseDouble(textFieldMediaAtencion.getText());
+            double disponibilidad = Double.parseDouble(textFieldDisponibilidad.getText());
+            double mediaEspera = Double.parseDouble(textFieldMediaEspera.getText());
+            double pn = Double.parseDouble(textFieldPln.getText());
+ 
+            double servicio = disponibilidad/60;
+            double llegada = mediaAtencion/60;
+            double p=  llegada / servicio;
+            if (mediaAtencion>disponibilidad ){
+                double wq= llegada /(servicio*(servicio-llegada));
+            // calculos 
+            double lq= llegada * wq;
+            double ws= 1/(servicio-llegada);
+            double ls= p/(1-p);
+            double pln = ( 1-(llegada/servicio))*(Math.pow((llegada/servicio), pn));
+            double pl= ( 1-(llegada/servicio))*((llegada/servicio));
+            // Mostrar los resultados
+            
+            textAreaResultados.setText("Resultados:\n"+
+            "media de servicio: "+servicio+ "\n"+
+            "medida de llegada: "+llegada+"\n "+ 
+             " P: "+p+"\n "+
+             " Wq: "+wq+" \n" +
+             " Lq: "+lq+" \n"+
+             " Ws: "+ws+"\n"+
+             " Ls: "+ls+"\n"+
+             "probabilidad de que haya n elementos en el sistema "+pln+"= "+pln*100+"\n"+
+             " probabilidad de que se tenga que esperar n de tiempo en la cola "+pl+"= "+pl*100);
+            
+            }
+             if (mediaAtencion<disponibilidad ){
+                double wq= servicio;
+            
+            double lq= llegada *wq;
+            double ws= 1/(servicio-llegada);
+            double ls= p/(1-p);
+            double pln = ( 1-(llegada/servicio))*(Math.pow((llegada/servicio), pn));
+            double pl= ( 1-(llegada/servicio))*((llegada/servicio));
+            // Mostrar los resultados en el JTextArea
+            
+            textAreaResultados.setText("Resultados:\n"+
+            "media de servicio: "+servicio+ "\n"+
+            "medida de llegada: "+llegada+"\n "+ 
+             " P: "+p+"\n "+
+             " Wq: "+wq+" \n" +
+             " Lq: "+lq+" \n"+
+             " Ws: "+ws+"\n"+
+             " Ls: "+ls+"\n"+
+             "probabilidad de que haya n elementos en el sistema "+pln+"= "+pln*100+"\n"+
+             " probabilidad de que se tenga que esperar n de tiempo en la cola "+pl+"= "+pl*100);
+            
+             }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese números válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            AntoniaMoralesTeoriaDeColas app = new AntoniaMoralesTeoriaDeColas();
+            app.setVisible(true);
+        });
+    }
+}
